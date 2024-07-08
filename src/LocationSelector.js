@@ -26,15 +26,15 @@ const LocationSelector = () => {
       const response = await axios.get('https://crio-location-selector.onrender.com/countries');
       if (response.status === 500) {
         setCountryError('Failed to fetch countries. Please try again later.');
-        setIsLoadingCountries(false);
-        setCountries([]); 
+        setCountries([]);
+      } else {
+        setCountries(response.data);
       }
-      setCountries(response.data);
-      setIsLoadingCountries(false);
     } catch (error) {
       setCountryError('Failed to fetch countries. Please try again later.');
-      setIsLoadingCountries(false);
       setCountries([]); // Clear countries array on error
+    } finally {
+      setIsLoadingCountries(false);
       setSelectedCountry(''); // Reset selected country
       setSelectedState(''); // Reset selected state
       setSelectedCity(''); // Reset selected city
@@ -42,28 +42,27 @@ const LocationSelector = () => {
       setCities([]); // Clear cities array on error
     }
   };
-  
+
   const fetchStates = async (countryName) => {
     try {
       setIsLoadingStates(true);
       const response = await axios.get(`https://crio-location-selector.onrender.com/country=${encodeURIComponent(countryName)}/states`);
       if (response.status === 500) {
         setStateError(`Failed to fetch states for ${countryName}. Please try again later.`);
-      setIsLoadingStates(false);
-      setStates([]); 
+        setStates([]);
+      } else {
+        setStates(response.data);
       }
-      setStates(response.data);
-      setIsLoadingStates(false);
     } catch (error) {
       setStateError(`Failed to fetch states for ${countryName}. Please try again later.`);
-      setIsLoadingStates(false);
       setStates([]); // Clear states array on error
+    } finally {
+      setIsLoadingStates(false);
       setSelectedState(''); // Reset selected state
       setSelectedCity(''); // Reset selected city
       setCities([]); // Clear cities array on error
     }
   };
-  
 
   const fetchCities = async (countryName, stateName) => {
     try {
@@ -71,15 +70,15 @@ const LocationSelector = () => {
       const response = await axios.get(`https://crio-location-selector.onrender.com/country=${encodeURIComponent(countryName)}/state=${encodeURIComponent(stateName)}/cities`);
       if (response.status === 500) {
         setCityError(`Failed to fetch cities for ${stateName}, ${countryName}. Please try again later.`);
-        setIsLoadingCities(false);
         setCities([]);
+      } else {
+        setCities(response.data);
       }
-      setCities(response.data);
-      setIsLoadingCities(false);
     } catch (error) {
       setCityError(`Failed to fetch cities for ${stateName}, ${countryName}. Please try again later.`);
-      setIsLoadingCities(false);
       setCities([]); // Clear cities array on error
+    } finally {
+      setIsLoadingCities(false);
       setSelectedCity(''); // Reset selected city
     }
   };
